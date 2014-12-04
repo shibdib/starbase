@@ -29,10 +29,8 @@ App = (function($, model) {
 		e_modules.empty();
 
 		var mods = tower.getModules();
-		var jsonmods = {};
 		for (var idx in mods) {
 			var m = mods[idx];
-			jsonmods[m['name']] = m['count'];
 			var tr = $('<tr>');
 			tr.append($('<td>', {'text': m['name']}));
 			tr.append($('<td>', {'text': m['count']}));
@@ -47,13 +45,6 @@ App = (function($, model) {
 			tr.append(del_td);
 			e_modules.append(tr);
 		}
-
-		var jsondata = {
-			'tower': tower.type,
-			'mods': jsonmods,
-		};
-
-		$('#tower-json').text(JSON.stringify(jsondata, undefined, 4));
 	}
 
 	function set_tower_type() {
