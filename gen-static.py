@@ -51,6 +51,14 @@ class SDE:
 		c.execute("SELECT volume FROM invTypes WHERE typeName = ?", (item_name,))
 		return c.fetchone()[0]
 
+	def item_meta_group(self, item_name):
+		meta_group_id = self.item_attribute(item_name, 'metaGroupID')
+		if not meta_group_id:
+			return None
+		c = self.db.cursor()
+		c.execute("SELECT metaGroupName FROM invMetaGroups WHERE metaGroupID = ?", (meta_group_id,))
+		return c.fetchone()[0]
+
 def bonused_weapon_type(sde, tower_type):
 	def hasbonus(name):
 		return sde.item_attribute(tower_type, 'controlTower%sBonus' % name)
@@ -65,16 +73,18 @@ def bonused_weapon_type(sde, tower_type):
 	return None
 
 def dump_towers(sde):
-	towers = []
+	towers = {}
 	tower_types = sde.items_in_group('Control Tower')
 	for ty in tower_types:
 		t = {'name': ty}
 		t['power'] = sde.item_attribute(ty, 'powerOutput')
 		t['cpu'] = sde.item_attribute(ty, 'cpuOutput')
+		mg = sde.item_meta_group(ty)
+		t['faction'] = (mg == 'Faction')
 		wt = bonused_weapon_type(sde, ty)
 		if wt:
 			t['weapon_type'] = wt
-		towers.append(t)
+		towers[ty] = t
 	return towers
 
 def mod_weapon_type(sde, type_name):
@@ -94,7 +104,7 @@ def mod_weapon_type(sde, type_name):
 	return None
 
 def dump_mods(sde):
-	mods = []
+	mods = {}
 	mod_groups = sde.groups_in_category('Structure')
 	# hack: control towers are themselves under the structure group but aren't
 	# tower modules. We remove that group here to avoid including the towers in the module array.
@@ -105,10 +115,11 @@ def dump_mods(sde):
 			t = {'name': ty}
 			t['power'] = sde.item_attribute(ty, 'power') or 0
 			t['cpu'] = sde.item_attribute(ty, 'cpu') or 0
+			t['faction'] = sde.item_meta_group(ty) == 'Faction'
 			wt = mod_weapon_type(sde, ty)
 			if wt:
 				t['weapon_type'] = wt
-			mods.append(t)
+			mods[ty] = t
 	return mods
 
 conn = sqlite3.connect('sqlite-latest.sqlite')
@@ -117,4 +128,4 @@ sde = SDE(conn)
 towers = dump_towers(sde)
 mods = dump_mods(sde)
 
-print json.dumps({'towers': towers, 'mods': mods}, indent=4, sort_keys=True)
+print 'starbase_static = %s;' % json.dumps({'towers': towers, 'mods': mods}, indent=4, sort_keys=True)
