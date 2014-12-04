@@ -36,6 +36,13 @@ App = (function($, model) {
 			tr.append($('<td>', {'text': m['count']}));
 			tr.append($('<td>', {'text': m['power']}));
 			tr.append($('<td>', {'text': m['cpu']}));
+			var add_td = $('<td>');
+			var add_button = $('<button>', {'text': '+'});
+			add_button.click(function() {
+				tower.add(m['name']);
+			});
+			add_td.append(add_button);
+			tr.append(add_td);
 			var del_td = $('<td>');
 			var del_button = $('<button>', {'text': '-'});
 			del_button.click(function() {
