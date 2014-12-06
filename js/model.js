@@ -46,6 +46,17 @@ Model = (function ($, tower_static) {
 		}
 	}
 
+	Tower.prototype.serialize = function(name) {
+		if (this.type === null) {
+			return "";
+		}
+		var serialized = "[" + this.type + ", " + this.type + "]\n\n";
+		for (var mod in this.modules) {
+			serialized += this.modules[mod] + "x " + mod + "\n";
+		}
+		return serialized;
+	}
+
 	Tower.prototype.getPower = function() {
 		if (this.type === null) {
 			return 0;

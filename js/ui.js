@@ -14,6 +14,10 @@ App = (function($, model) {
 		}
 	}
 
+	function update_tower_export() {
+		$('#tower-export-text').text(tower.serialize());
+	}
+
 	function update_tower_details() {
 		var tt = model.data.tower(tower.type);
 
@@ -123,6 +127,7 @@ App = (function($, model) {
 
 	function tower_updated() {
 		update_tower_details();
+		update_tower_export();
 		update_mod_picker();
 	}
 
