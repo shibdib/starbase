@@ -19,11 +19,34 @@ App = (function($, model) {
 
 		$('#tower-details-name').text(tower.type);
 
-		$('#tower-details-pg').text(tt.power);
-		$('#tower-details-cpu').text(tt.cpu);
+		$('#tower-details-pg').text(number_format(tt.power));
+		$('#tower-details-cpu').text(number_format(tt.cpu));
 
-		$('#tower-details-pg-left').text(tower.getPower());
-		$('#tower-details-cpu-left').text(tower.getCPU());
+		var pg_left = $('#tower-details-pg-left');
+		pg_left.text(number_format(tower.getPower()));
+		if(tower.getPower() >= 0)
+		{
+			pg_left.addClass('success');
+			pg_left.removeClass('danger');
+		}
+		else
+		{
+			pg_left.addClass('danger');
+			pg_left.removeClass('success');
+		}
+
+		var cpu_left = $('#tower-details-cpu-left');
+		cpu_left.text(number_format(tower.getCPU()));
+		if(tower.getCPU() >= 0)
+		{
+			cpu_left.addClass('success');
+			cpu_left.removeClass('danger');
+		}
+		else
+		{
+			cpu_left.addClass('danger');
+			cpu_left.removeClass('success');
+		}
 
 		var e_modules = $('#tower-details-modules');
 		e_modules.empty();
@@ -33,15 +56,17 @@ App = (function($, model) {
 			var m = mods[idx];
 			var tr = $('<tr>');
 			tr.append($('<td>', {'text': m['name']}));
-			tr.append($('<td>', {'text': m['count']}));
-			tr.append($('<td>', {'text': m['power']}));
-			tr.append($('<td>', {'text': m['cpu']}));
+			tr.append($('<td><label class="label label-default">'+m['count']+'</label></td>'));
+			tr.append($('<td>', {'text': number_format(m['power'])}));
+			tr.append($('<td>', {'text': number_format(m['cpu'])}));
 			var del_td = $('<td>');
-			var del_button = $('<button>', {'text': '-'});
-			del_button.click(function() {
+			var add_button = $('<button class="btn btn-sm btn-success"><i class="fa fa-plus"></i></button>').on('click', function() {
+				tower.add(m['name']);
+			});
+			var del_button = $('<button class="btn btn-sm btn-danger"><i class="fa fa-minus"></i></button>').on('click', function() {
 				tower.remove(m['name']);
 			});
-			del_td.append(del_button);
+			del_td.append(add_button).append('&nbsp;').append(del_button);
 			tr.append(del_td);
 			e_modules.append(tr);
 		}

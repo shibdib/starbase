@@ -1,46 +1,130 @@
 <html>
- <head>
-  <link rel="stylesheet" type="text/css" href="starbase.css">
-  <script src="jquery-2.1.1.min.js"></script>
-  <script src="static.js"></script>
-  <script src="model.js"></script>
-  <script src="ui.js"></script>
- </head>
- <body>
-   <div id="tower-picker">
- 	  <select id="tower-type"></select>
- 	  <input type="checkbox" id="tower-type-show-faction" />Show Faction
- 	  <button id="tower-type-set">Set Tower Type</button>
- 	</div>
+	<head>
+		<title>EVE POS Builder</title>
+		<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="starbase.css">
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+		<script src="js/util.js"></script>
+		<script src="static.js"></script>
+		<script src="js/model.js"></script>
+		<script src="js/ui.js"></script>
+	</head>
+	<body>
 
- 	<div id="mod-picker">
- 		<select id="mod-picker-type"></select>
- 		<button id="mod-picker-add">Add</button>
- 		<input type="checkbox" id="mod-picker-show-silly" />Show Silly Modules
- 		<input type="checkbox" id="mod-picker-show-faction" />Show Faction Modules
- 	</div>
+		<!-- Static navbar -->
+		<nav class="navbar navbar-default navbar-static-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">EVE POS Builder</a>
+				</div>
+			</div>
+		</nav>
 
- 	<div id="tower-details">
- 		<span id="tower-details-name"></span>
-   		PG: <span id="tower-details-pg"></span>
-   		CPU: <span id="tower-details-cpu"></span>
-   		<table>
-   	 		<thead>
-   	   			<td>Module</td>
-   	   			<td>Quantity</td>
-   	   			<td>PG</td>
-   	   			<td>CPU</td>
-   	   			<td><!-- remove button --></td>
-   	 		</thead>
-   	 		<tbody id="tower-details-modules"></tbody>
-   	 		<tfoot>
-   	   			<td>Remaining</td>
-   	   			<td></td>
-   	   			<td id="tower-details-pg-left"></td>
-   	   			<td id="tower-details-cpu-left"></td>
-   	   			<td><!-- remove button --></td>
-   	   		</tfoot>
-   	   	</table>
-   	</div>
- </body>
+		<!-- Container -->
+		<div class="container">
+
+			<div class="row">
+				<div class="col-sm-12">
+					<h2>
+						<div class="pull-right">
+							<div class="btn-group" data-toggle="buttons-checkbox">
+								<a class="btn btn-xs btn-warning collapse-data-btn" data-toggle="collapse" href="#tower_filters">
+									<i class="fa fa-caret-square-o-down"></i>
+									Toggle Tower Filters
+								</a>
+							</div>
+						</div>
+						Control Tower
+					</h2>
+					<form class="form" role="form" onsubmit="return false;">
+						<div class="panel panel-default collapse" id="tower_filters">
+							<div class="panel-heading">Tower Filters</div>
+							<div class="panel-body">
+								<label>
+									<input type="checkbox" id="tower-type-show-faction" /> Show Faction Towers?
+								</label>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label>Tower Type</label>
+							<div class="input-group">
+								<select class="form-control" id="tower-type"></select>
+								<span class="input-group-btn">
+									<button id="tower-type-set" class="btn btn-primary">Set Tower Type</button>
+								</span>
+							</div><!-- /input-group -->
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<h2>
+						<div class="pull-right">
+							<div class="btn-group" data-toggle="buttons-checkbox">
+								<a class="btn btn-xs btn-warning collapse-data-btn" data-toggle="collapse" href="#module_filters">
+									<i class="fa fa-caret-square-o-down"></i>
+									Toggle Module Filters
+								</a>
+							</div>
+						</div>
+						Modules
+					</h2>
+					<div id="mod-picker">
+						<div class="panel panel-default collapse" id="module_filters">
+							<div class="panel-heading">Module Filters</div>
+							<div class="panel-body">
+								<label>
+									<input type="checkbox" id="mod-picker-show-silly" /> Show Silly Modules
+								</label><br />
+								<label>
+									<input type="checkbox" id="mod-picker-show-faction" /> Show Faction Modules
+								</label>
+							</div>
+						</div>
+						<div class="input-group">
+							<select class="form-control" id="mod-picker-type"></select>
+							<span class="input-group-btn">
+								<button id="mod-picker-add" class="btn btn-success">Add</button>
+							</span>
+						</div><!-- /input-group -->
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-sm-12">
+					<h2>Your Build</h2>
+					<div id="tower-details">
+						<table class="table table-bordered table-striped table-condensed table-hover">
+							<thead>
+								<th>Module</th>
+								<th>Quantity</th>
+								<th>PG</th>
+								<th>CPU</th>
+								<th><!-- remove button --></th>
+							</thead>
+							<tbody id="tower-details-modules"></tbody>
+							<tfoot>
+								<td></td>
+								<td>Remaining:</td>
+								<td id="tower-details-pg-left"></td>
+								<td id="tower-details-cpu-left"></td>
+								<td><!-- remove button --></td>
+							</tfoot>
+						</table>
+						<div class="well">
+							<strong>Name:</strong> <span id="tower-details-name"></span><br />
+							<strong>Total PG:</strong> <span id="tower-details-pg"></span> <i class="fa fa-power-off"></i> <br />
+							<strong>Total CPU:</strong> <span id="tower-details-cpu"></span> <i class="fa fa-cog"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
 </html>
